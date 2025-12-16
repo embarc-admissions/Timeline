@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Roadmap: Academics & Impact</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Styling -->
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #F8FAFC; /* Slate-50 */
+            color: #1E293B; /* Slate-800 */
+        }
+
+        /* Timeline Connector Styling */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background-color: #E2E8F0;
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        /* Checkbox Animation */
+        .task-checkbox:checked + div {
+            background-color: #10B981;
+            border-color: #10B981;
+        }
+        .task-checkbox:checked + div svg {
+            display: block;
+        }
+        .task-label.completed {
+            text-decoration: line-through;
+            color: #94A3B8;
+        }
+        
+        /* Smooth fade for interactions */
+        .task-item {
+            transition: all 0.2s ease;
+        }
+        .task-item:hover {
+            background-color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="antialiased pb-20">
+
+    <!-- Header -->
+    <div class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                    🎓 Aanya's Timeline
+                </h1>
+                <p class="text-xs text-slate-500">Interactive Tracker</p>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-bold text-indigo-600" id="progress-percent">0%</div>
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 h-2">
+            <div id="progress-bar" class="bg-indigo-600 h-2 transition-all duration-500" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+        <div class="relative timeline-line space-y-12" id="timeline-container">
+            <!-- Content injected via JS -->
+        </div>
+    </main>
+
+    <!-- DATA & LOGIC -->
+    <script>
+        // --- 1. DATA SOURCE (Updated with your new inputs) ---
+        const timelineData = [
+            {
+                id: 1,
+                month: "December",
+                title: "Foundations & Diagnostics",
+                tasks: [
+                    { id: 't1-1', txt: "Final exams", cat: "Academic" },
+                    { id: 't1-2', txt: "Work on research paper", cat: "Project" },
+                    { id: 't1-3', txt: "Finish online course", cat: "Academic" },
+                    { id: 't1-4', txt: "Give SAT diagnostic", cat: "Testing" }
+                ]
+            },
+            {
+                id: 2,
+                month: "January",
+                title: "Exploration & Coaching",
+                tasks: [
+                    { id: 't2-1', txt: "Start SAT prep with SATnPaper", cat: "Testing" },
+                    { id: 't2-2', txt: "Work on roadmap activities", cat: "Strategy" },
+                    { id: 't2-3', txt: "Visit aquaponics farm", cat: "Project" },
+                    { id: 't2-4', txt: "Begin internship with Shaily", cat: "Project" },
+                    { id: 't2-5', txt: "Continue working on blog", cat: "Project" }
+                ]
+            },
+            {
+                id: 3,
+                month: "February",
+                title: "Leadership & Board Prep",
+                tasks: [
+                    { id: 't3-1', txt: "Work on school leadership", cat: "Project" },
+                    { id: 't3-2', txt: "Prep for boards", cat: "Academic" },
+                    { id: 't3-3', txt: "Continue working on blog", cat: "Project" }
+                ]
+            },
+            {
+                id: 4,
+                month: "March",
+                title: "Examinations",
+                tasks: [
+                    { id: 't4-1', txt: "Board exams", cat: "Academic" },
+                    { id: 't4-2', txt: "Interview series for blog", cat: "Project" }
+                ]
+            },
+            {
+                id: 5,
+                month: "April",
+                title: "Academics & Testing",
+                tasks: [
+                    { id: 't5-1', txt: "Board exams (Continued)", cat: "Academic" },
+                    { id: 't5-2', txt: "SAT Prep", cat: "Testing" }
+                ]
+            },
+            {
+                id: 6,
+                month: "May",
+                title: "Research & Planning",
+                tasks: [
+                    { id: 't6-1', txt: "SAT Prep", cat: "Testing" },
+                    { id: 't6-2', txt: "Work on roadmap activities", cat: "Strategy" },
+                    { id: 't6-3', txt: "Strengthen roadmap activities", cat: "Strategy" },
+                    { id: 't6-4', txt: "Join research program", cat: "Project" }
+                ]
+            },
+            {
+                id: 7,
+                month: "June",
+                title: "Internship & SAT #1",
+                tasks: [
+                    { id: 't7-1', txt: "Internship", cat: "Project" },
+                    { id: 't7-2', txt: "Work on roadmap activities", cat: "Strategy" },
+                    { id: 't7-3', txt: "Give SAT #1", cat: "Testing" }
+                ]
+            },
+            {
+                id: 8,
+                month: "July",
+                title: "Summer Studies",
+                tasks: [
+                    { id: 't8-1', txt: "Summer course", cat: "Academic" },
+                    { id: 't8-2', txt: "SAT Prep", cat: "Testing" }
+                ]
+            },
+            {
+                id: 9,
+                month: "August",
+                title: "Impact & SAT #2",
+                tasks: [
+                    { id: 't9-1', txt: "Give SAT #2", cat: "Testing" },
+                    { id: 't9-2', txt: "Start Ocean Explorers in school", cat: "Project" },
+                    { id: 't9-3', txt: "Volunteer with environmental NGOs", cat: "Project" }
+                ]
+            },
+            {
+                id: 10,
+                month: "September",
+                title: "Research Completion",
+                tasks: [
+                    { id: 't10-1', txt: "Continue work on Ocean Explorers", cat: "Project" },
+                    { id: 't10-2', txt: "Complete research paper", cat: "Academic" }
+                ]
+            },
+            {
+                id: 11,
+                month: "October",
+                title: "Publishing & Ideation",
+                tasks: [
+                    { id: 't11-1', txt: "Send paper for publishing", cat: "Academic" },
+                    { id: 't11-2', txt: "Ideate nodal and capstone project", cat: "Strategy" }
+                ]
+            },
+            {
+                id: 12,
+                month: "November",
+                title: "Capstone Focus",
+                tasks: [
+                    { id: 't12-1', txt: "Work on capstone project like awareness drive and Green Policy", cat: "Project" }
+                ]
+            },
+            {
+                id: 13,
+                month: "December",
+                title: "Implementation & Policy",
+                tasks: [
+                    { id: 't13-1', txt: "Awareness Drive: Mangrove Destruction", cat: "Project" },
+                    { id: 't13-2', txt: "Implement green policy in school", cat: "Project" }
+                ]
+            }
+        ];
+
+        // --- 2. CONFIG ---
+        const colors = {
+            Testing: '#F43F5E',    // Pink
+            Project: '#10B981',    // Emerald (Green)
+            Strategy: '#06B6D4',   // Cyan
+            Academic: '#8B5CF6',   // Purple
+            Admin: '#F59E0B'       // Amber
+        };
+
+        // State management
+        let completedSet = new Set();
+        const totalTasks = timelineData.reduce((acc, curr) => acc + curr.tasks.length, 0);
+
+        // --- 3. RENDER ---
+        const container = document.getElementById('timeline-container');
+        
+        timelineData.forEach((item, index) => {
+            const alignment = index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse';
+            const itemAlignment = index % 2 === 0 ? 'md:items-end' : 'md:items-start';
+            const textAlign = index % 2 === 0 ? 'md:text-right' : 'md:text-left';
+
+            let tasksHtml = item.tasks.map(t => `
+                <label class="task-item flex items-center gap-3 p-3 rounded-lg cursor-pointer ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}">
+                    <input type="checkbox" class="task-checkbox hidden" onchange="toggleTask('${t.id}')">
+                    
+                    <!-- Custom Checkbox UI -->
+                    <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center flex-shrink-0 bg-white">
+                        <svg class="w-3 h-3 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+
+                    <!-- Text -->
+                    <div class="flex flex-col ${textAlign} flex-grow">
+                        <span class="task-label text-slate-700 font-medium text-sm transition-all">${t.txt}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5" style="color: ${colors[t.cat]}">${t.cat}</span>
+                    </div>
+                </label>
+            `).join('');
+
+            const html = `
+                <div class="relative flex flex-col ${alignment} items-center w-full timeline-card group">
+                    <!-- Content Box -->
+                    <div class="w-full md:w-5/12 ${itemAlignment} flex flex-col p-4">
+                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 hover:shadow-xl transition-shadow duration-300 w-full relative" 
+                             style="border-color: ${colors[item.tasks[0].cat]}">
+                            
+                            <div class="flex justify-between items-center mb-4 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}">
+                                <h3 class="text-xl font-bold text-gray-800">${item.month}</h3>
+                                <span class="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded-full">${item.title}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                ${tasksHtml}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center Node -->
+                    <div class="absolute left-4 md:left-1/2 w-8 h-8 rounded-full bg-white border-4 border-indigo-500 z-10 transform -translate-x-1/2 flex items-center justify-center shadow-sm">
+                        <div class="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                    </div>
+
+                    <!-- Empty Space -->
+                    <div class="hidden md:block w-5/12"></div>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
+
+        // --- 4. INTERACTIVITY ---
+        function toggleTask(id) {
+            const label = document.querySelector(`input[onchange="toggleTask('${id}')"]`).parentElement.querySelector('.task-label');
+            
+            if (completedSet.has(id)) {
+                completedSet.delete(id);
+                label.classList.remove('completed');
+            } else {
+                completedSet.add(id);
+                label.classList.add('completed');
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percent = Math.round((completedSet.size / totalTasks) * 100);
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+        }
+    </script>
+</body>
+</html>
